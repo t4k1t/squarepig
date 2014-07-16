@@ -4,6 +4,7 @@ import sys
 from os import path
 from time import sleep
 from PyQt4 import QtCore, QtGui
+from backpig import SquarePig, Playlist
 
 
 class SquarePigThread(QtCore.QThread):
@@ -254,6 +255,7 @@ class MainWidget(QtGui.QWidget):
 
 
 def main():
+    """Main function."""
     app = QtGui.QApplication(sys.argv)
     window = MyMainWindow()
     window.resize(640, 480)
