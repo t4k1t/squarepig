@@ -12,3 +12,12 @@ _coverage
 
 # documentation
 docs/_build/*
+
+# debian
+debian/*
+!debian/changelog
+!debian/compat
+!debian/control
+!debian/copyright
+!debian/install
+!debian/squarepig.desktop

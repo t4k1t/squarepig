@@ -1,0 +1,8 @@
+Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: Square Pig
+Upstream-Contact: Tablet Mode <tablet-mode@monochromatic.cc>
+Source: https://github.com/tablet-mode/squarepig
+
+Files: *
+Copyright: 2014 Tablet Mode
+License: GPL-3+
