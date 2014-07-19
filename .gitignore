@@ -21,4 +21,5 @@ debian/*
 !debian/copyright
 !debian/install
 !debian/rules
+!debian/source
 !debian/squarepig.desktop
