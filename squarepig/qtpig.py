@@ -4,7 +4,7 @@ import sys
 from os import path
 from time import sleep
 from PyQt4 import QtCore, QtGui
-from backpig import SquarePig, Playlist
+from squarepig.backpig import SquarePig, Playlist
 
 
 class SquarePigThread(QtCore.QThread):
@@ -68,19 +68,14 @@ class MyMainWindow(QtGui.QMainWindow):
         self.setCentralWidget(self.form_widget)
         self.statusBar()
 
-        #######################################################################
-        # TODO: This is ugly, either just use system theme or supply own icon
-        # set.
+        # icon theme fallback
         icons = {
             'open': 'document-open',
             'exit': 'application-exit',
-            'auth': 'gtk-dialog-authentication',
         }
-        #theme = QtGui.QIcon.themeName()
         for key, icon in icons.items():
             if not QtGui.QIcon.hasThemeIcon(icon):
                 QtGui.QIcon.setThemeName('gnome')
-        #######################################################################
 
         openAction = QtGui.QAction(QtGui.QIcon.fromTheme('document-open'),
                                    '&Open', self)

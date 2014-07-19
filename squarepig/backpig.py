@@ -23,11 +23,11 @@ class Playlist:
     def __init__(self, playlist, musicdir=None):
         """Parse playlist."""
         files = []
-        # Might throw FileNotFoundError.
+        # might throw FileNotFoundError
         with open(path.expanduser(playlist)) as ofile:
             for line in ofile:
                 files.append(line.rstrip())
-        # Try to guess playlist format from file content.
+        # try to guess playlist format from file content
         if match(r"^#EXTM3U", files[0]):
             # m3u playlist
             self._parse_m3u(files, musicdir)
@@ -59,7 +59,7 @@ class Playlist:
 
     def _parse_xspf(self, playlist, musicdir):
         """Get file paths from xspf playlist."""
-        # See if beautifulsoup is installed
+        # check if beautifulsoup is installed
         try:
             from bs4 import BeautifulSoup
         except ImportError:

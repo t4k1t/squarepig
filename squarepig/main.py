@@ -1,18 +1,18 @@
-#!/usr/bin/python3
-
 """Square Pig."""
 
 import argparse
 import imp
 import sys
 from os import path
-from backpig import SquarePig, Playlist
+
+from squarepig import __version__
+from squarepig.backpig import SquarePig, Playlist
 
 
 GUI = True
 
 try:
-    # Check if PyQt is installed.
+    # check if PyQt is installed
     imp.find_module('PyQt4')
 except ImportError:
     GUI = False
@@ -20,7 +20,7 @@ except ImportError:
 
 def gui():
     """GUI."""
-    from qtpig import main as gui_main
+    from squarepig.qtpig import main as gui_main
     gui_main()
 
 
@@ -36,6 +36,9 @@ def main():
     parser.add_argument(
         '-m', '--musicdir', metavar='MUSIC_DIR', type=str,
         help='prefix paths in playlist with MUSIC_DIR')
+    parser.add_argument(
+        '-V', '--version', action='version',
+        version='Square Pig {version}'.format(version=__version__))
     args = parser.parse_args()
 
     arg_count = 0
