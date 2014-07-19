@@ -2,7 +2,8 @@
 
 import pytest
 
-from squarepig.squarepig import main
+from squarepig.main import main
+from squarepig import __version__
 
 
 class TestCLI:
@@ -16,3 +17,11 @@ class TestCLI:
             main()
         out, err = capsys.readouterr()
         assert "usage:" in out.lower()
+
+    def test_version(self, capsys, monkeypatch):
+        """Test CLI."""
+        monkeypatch.setattr('sys.argv', ['squarepig.py', '-V'])
+        with pytest.raises(SystemExit):
+            main()
+        out, err = capsys.readouterr()
+        assert "Square Pig {version}".format(version=__version__) in err

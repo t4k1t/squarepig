@@ -1,8 +1,6 @@
 PYTHON=`which python3`
 DESTDIR=/usr/bin/
-BUILDIR=$(CURDIR)/debian/squarepig
 PROJECT=squarepig
-VERSION=0.2.0-beta
 
 all:
 	@echo "make source - Create source package"
@@ -10,6 +8,7 @@ all:
 	@echo "make buildrpm - Generate a rpm package"
 	@echo "make builddeb - Generate a deb package"
 	@echo "make clean - Get rid of scratch and byte files"
+	@echo "make test - Run tests"
 
 source:
 	$(PYTHON) setup.py sdist $(COMPILE)
@@ -31,7 +30,9 @@ builddeb:
 clean:
 	$(PYTHON) setup.py clean
 	rm -rf build/ MANIFEST
-	find . -name '*.pyc' -delete
+	find . -type f -name '*.pyc' -delete
 
 test:
 	tox
+
+.PHONY: all clean
