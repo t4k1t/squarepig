@@ -4,5 +4,5 @@ Version=0.2.0
 Name=Square Pig 
 Comment=Square Pig playlist mangler
 Icon=squarepig
-Path=/usr/local/bin/squarepig
+Path=/usr/bin/squarepig
 Categories=Tools;

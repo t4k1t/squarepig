@@ -1,5 +1,23 @@
-squarepig (0.1.0) UNRELEASED; urgency=low
+squarepig (0.2.0ubuntu3) trusty; urgency=high
+
+  * Changed install path to /usr/bin.
+
+ -- Tablet Mode <tablet-mode@monochromatic.cc>  Wed, 23 Jul 2014 20:42:52 +0200
+
+squarepig (0.2.0ubuntu2) trusty; urgency=medium
+
+  * Removed tests from build process until fixed.
+
+ -- Tablet Mode <tablet-mode@monochromatic.cc>  Wed, 23 Jul 2014 20:04:00 +0200
+
+squarepig (0.2.0ubuntu1) trusty; urgency=medium
+
+  * Added missing build dependencies.
+
+ -- Tablet Mode <tablet-mode@monochromatic.cc>  Tue, 22 Jul 2014 21:20:45 +0200
+
+squarepig (0.2.0) trusty; urgency=low
 
   * Initial release.
 
- -- Tablet Mode <tablet-mode@monochromatic.cc>  Sun, 06 Jul 2014 11:56:53 +0200
+ -- Tablet Mode <tablet-mode@monochromatic.cc>  Tue, 22 Jul 2014 21:20:13 +0200

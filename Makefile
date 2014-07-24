@@ -1,5 +1,6 @@
 PYTHON=`which python3`
-DESTDIR=/usr/bin/
+# DESTDIR=/usr/bin/
+BIN=$(DESTDIR)/usr/bin
 PROJECT=squarepig
 
 all:
@@ -14,7 +15,7 @@ source:
 	$(PYTHON) setup.py sdist $(COMPILE)
 
 install:
-	$(PYTHON) setup.py install --root $(DESTDIR) $(COMPILE)
+	$(PYTHON) setup.py install --install-layout=deb --root $(DESTDIR) $(COMPILE)
 
 buildrpm:
 	$(PYTHON) setup.py bdist_rpm --post-install=rpm/postinstall --pre-uninstall=rpm/preuninstall
@@ -22,17 +23,13 @@ buildrpm:
 builddeb:
 	# build the source package in the parent directory
 	# then rename it to project_version.orig.tar.gz
-	$(PYTHON) setup.py sdist $(COMPILE) --dist-dir=../
+	$(PYTHON) setup.py sdist --dist-dir=../
 	rename -f 's/$(PROJECT)-(.*)\.tar\.gz/$(PROJECT)_$$1\.orig\.tar\.gz/' ../*
 	# build the package
-	dpkg-buildpackage -i -I -rfakeroot
+	# dpkg-buildpackage -i.tox -i.git -I -rfakeroot
+	debuild -S -sd
 
 clean:
 	$(PYTHON) setup.py clean
 	rm -rf build/ MANIFEST
 	find . -type f -name '*.pyc' -delete
-
-test:
-	tox
-
-.PHONY: all clean
