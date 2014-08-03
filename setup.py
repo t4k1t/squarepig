@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-""" Setup script for Square Pig. """
+""" Setup script for Squarepig. """
 
 from setuptools import setup
 from textwrap import dedent
@@ -24,7 +24,7 @@ setup(
 
     description="A playlist mangler",
     long_description=dedent("""
-        Square Pig takes files from a playlist and copies those files to a
+        Squarepig takes files from a playlist and copies those files to a
         target folder in the order they are listed in the playlist
         and prepends the filenames with consecutive numbers."""),
 

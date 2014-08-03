@@ -10,5 +10,5 @@ Homepage: https://github.com/tablet-mode/squarepig
 Package: squarepig
 Architecture: any
 Depends: ${misc:Depends}, ${python3:Depends}, python3-pyqt4 (>=4.9.1), python3-bs4 (>=4.0.2)
-Description: Square Pig playlist mangler
- Square Pig takes files from a playlist and copies those files to a target folder in the order they are listed in the playlist and prepends the filenames with consecutive numbers.
+Description: Squarepig playlist mangler
+ Squarepig takes files from a playlist and copies those files to a target folder in the order they are listed in the playlist and prepends the filenames with consecutive numbers.

@@ -24,4 +24,4 @@ class TestCLI:
         with pytest.raises(SystemExit):
             main()
         out, err = capsys.readouterr()
-        assert "Square Pig {version}".format(version=__version__) in out
+        assert "Squarepig {version}".format(version=__version__) in out
