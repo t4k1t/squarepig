@@ -1,2 +1,3 @@
 debian/squarepig.desktop usr/share/applications
 squarepig.png usr/share/pixmaps
+man/squarepig.1.bz2 usr/share/man/man1

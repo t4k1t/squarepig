@@ -21,6 +21,8 @@ buildrpm:
 	$(PYTHON) setup.py bdist_rpm --post-install=rpm/postinstall --pre-uninstall=rpm/preuninstall
 
 builddeb:
+	# pack man-page
+	bzip2 -k man/squarepig.1
 	# build the source package in the parent directory
 	# then rename it to project_version.orig.tar.gz
 	$(PYTHON) setup.py sdist --dist-dir=../
