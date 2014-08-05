@@ -1,4 +1,4 @@
-squarepig
+Squarepig
 =========
 
 A playlist mangler
