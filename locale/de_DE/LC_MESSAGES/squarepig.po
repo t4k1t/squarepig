@@ -1,0 +1,100 @@
+# Translations for Squarepig
+# Copyright (C) 2014 Tablet Mode
+# This file is distributed under the same license as the squarepig package.
+# Tablet Mode <tablet-mode@monochromatic.cc>, 2014.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: 0.2.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-07-30 23:28+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Tablet Mode <tablet-mode@monochromatic.cc>\n"
+"Language-Team: English <tablet-mode@monochromatic.cc>\n"
+"Language: en_GB\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: squarepig/qtpig.py:88
+msgid "&Open"
+msgstr "&Öffnen"
+
+#: squarepig/qtpig.py:92
+msgid "Open playlist"
+msgstr "Wiedergabeliste öffnen"
+
+#: squarepig/qtpig.py:96
+msgid "&Exit"
+msgstr "&Beenden"
+
+#: squarepig/qtpig.py:99
+msgid "Exit applictaion"
+msgstr "Programm beenden"
+
+#: squarepig/qtpig.py:105
+msgid "&File"
+msgstr "&Datei"
+
+#: ../projects/code/squarepig/squarepig/qtpig.py:118
+msgid "Start"
+msgstr "Start"
+
+#: ../projects/code/squarepig/squarepig/qtpig.py:124
+msgid "Open playlist:"
+msgstr "Wiedergabeliste öffnen:"
+
+#: ../projects/code/squarepig/squarepig/qtpig.py:128
+msgid "Playlist:"
+msgstr "Wiedergabeliste:"
+
+#: ../projects/code/squarepig/squarepig/qtpig.py:136
+msgid "Choose destination"
+msgstr "Zielordner wählen"
+
+#: ../projects/code/squarepig/squarepig/qtpig.py:140
+msgid "Save to:"
+msgstr "Speichern in:"
+
+#: ../projects/code/squarepig/squarepig/qtpig.py:188
+msgid "Stopping..."
+msgstr "Breche ab..."
+
+#: ../projects/code/squarepig/squarepig/qtpig.py:202
+msgid "Done"
+msgstr "Fertig"
+
+#: ../projects/code/squarepig/squarepig/qtpig.py:205
+msgid "Stopped"
+msgstr "Gestoppt"
+
+#: ../projects/code/squarepig/squarepig/qtpig.py:209
+msgid "Stop"
+msgstr "Stoppen"
+
+#: ../projects/code/squarepig/squarepig/qtpig.py:216
+msgid "Open file"
+msgstr "Datei öffnen"
+
+#: ../projects/code/squarepig/squarepig/qtpig.py:229
+msgid "Unknown playlist format"
+msgstr "Unbekanntes Wiedergabelisten Format"
+
+#: ../projects/code/squarepig/squarepig/qtpig.py:232
+#, python-brace-format
+msgid "Unsupported playlist format: {0}"
+msgstr "Nicht unterstütztes Wiedergabelisten Format: {0}"
+
+#: ../projects/code/squarepig/squarepig/qtpig.py:235
+#, python-brace-format
+msgid "Unable to read playlist: {0}"
+msgstr "Konnte Wiedergabeliste nicht lesen: {0}"
+
+#: ../projects/code/squarepig/squarepig/qtpig.py:243
+msgid "Save to"
+msgstr "Speichern unter"
+
+#: ../projects/code/squarepig/squarepig/qtpig.py:264
+msgid "Please select a playlist first"
+msgstr "Bitte zuerst eine Wiedergabeliste auswählen"

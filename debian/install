@@ -1,3 +1,5 @@
 debian/squarepig.desktop usr/share/applications
 squarepig.png usr/share/pixmaps
 man/squarepig.1.bz2 usr/share/man/man1
+locale/en_GB/LC_MESSAGES/squarepig.mo usr/share/locale/en_GB/LC_MESSAGES
+locale/de_DE/LC_MESSAGES/squarepig.mo usr/share/locale/de_DE/LC_MESSAGES

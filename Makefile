@@ -35,3 +35,10 @@ clean:
 	$(PYTHON) setup.py clean
 	rm -rf build/ MANIFEST
 	find . -type f -name '*.pyc' -delete
+
+inslocale:
+	# build and install locales to system
+	msgfmt -o locale/en_GB/LC_MESSAGES/squarepig.mo locale/en_GB/LC_MESSAGES/squarepig.po
+	install -D locale/en_GB/LC_MESSAGES/squarepig.mo /usr/share/locale/en_GB/LC_MESSAGES/squarepig.mo
+	msgfmt -o locale/de_DE/LC_MESSAGES/squarepig.mo locale/de_DE/LC_MESSAGES/squarepig.po
+	install -D locale/de_DE/LC_MESSAGES/squarepig.mo /usr/share/locale/de_DE/LC_MESSAGES/squarepig.mo

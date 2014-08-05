@@ -1,13 +1,9 @@
-"""Backend for Square Pig."""
+"""Backend for Squarepig."""
 
 from os import path, makedirs
 from re import match, sub
 from shutil import copy
-
-
-# TODO: Write some tests.
-# TODO: Localisation
-# TODO: Move Playlist class into separate library.
+from sys import stderr, stdout
 
 
 class Playlist:
@@ -103,6 +99,7 @@ class SquarePig:
 
     def copy_to(self, files, destination):
         """Copy files to destination."""
+        self.failed = []
         if not path.isdir(path.expanduser(destination)):
             try:
                 makedirs(destination)
@@ -135,11 +132,13 @@ class SquarePig:
                 max_zeroes = int(max_zeroes) - 1
             target = destination + "/" + padding + "_" + path.basename(file)
             try:
-                copy(file, target)
                 self.progress = (count, file_count)
+                copy(file, target)
                 #percent = int(count / file_count * 100)
-                #stdout.write("                    \r")
-                #stdout.write("Copying files: {0}%\r".format(percent))
+                #stdout.write("                      \r")
+                #stdout.write("Copying files: {0}/{1}\r".format(count, file_count))
+                # XXX: DEBUG output
+                print("Copying files: {0}/{1}".format(count + 1, file_count))
             except PermissionError:
                 msg = (
                     "Insufficient permissions to copy {file} to DESTINATION "
@@ -148,13 +147,22 @@ class SquarePig:
                 self.error = msg
                 raise self.CopyError(msg)
             except FileNotFoundError:
-                msg = "Unable to find files referenced in playlist"
-                self.state = 'stopped'
-                self.error = msg
-                raise self.CopyError(msg)
+                self.failed.append(count)
+                msg = "unable to find file: {0}".format(file)
+                # self.state = 'stopped'
+                # self.error = msg
+                # raise self.CopyError(msg)
+                stderr.write('{0}\n'.format(msg))
+                continue
 
         self.progress = (file_count, file_count)
         self.state = 'done'
+        stderr.write('failed to copy {0} files\n'.format(
+            len(self.failed)))
+
+    def get_failed(self):
+        """Get failed files."""
+        return self.failed
 
     def get_state(self):
         """Get current state."""

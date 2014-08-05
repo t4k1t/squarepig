@@ -25,3 +25,20 @@ class TestCLI:
             main()
         out, err = capsys.readouterr()
         assert "Squarepig {version}".format(version=__version__) in out
+
+    def test_invalid_playlist(self, capsys, monkeypatch):
+        monkeypatch.setattr('sys.argv', ['squarepig.py', '-p',
+                            'totally_invalid_playlist_path', '-d',
+                            'invalid_destination_path'])
+        with pytest.raises(SystemExit):
+            main()
+        out, err = capsys.readouterr()
+        assert "unable to find" in err
+
+    def test_missing_playlist(self, capsys, monkeypatch):
+        monkeypatch.setattr('sys.argv', ['squarepig.py', '-d',
+                            'totally_invalid_destination_path'])
+        with pytest.raises(SystemExit):
+            main()
+        out, err = capsys.readouterr()
+        assert "mutually inclusive" in err

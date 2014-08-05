@@ -1,4 +1,4 @@
-"""QT GUI for Square Pig."""
+"""Qt GUI for Squarepig."""
 
 import sys
 from os import path
@@ -7,7 +7,7 @@ from PyQt4 import QtCore, QtGui
 from squarepig.backpig import SquarePig, Playlist
 
 
-class SquarePigThread(QtCore.QThread):
+class SquarepigThread(QtCore.QThread):
 
     """Worker thread."""
 
@@ -15,6 +15,8 @@ class SquarePigThread(QtCore.QThread):
 
     def __init__(self, files, destination):
         """Initialise thread."""
+        # XXX: DEBUG output
+        print("initialising squarepig thread...")
         QtCore.QThread.__init__(self)
         self.sargasso = SquarePig()
         self.files = files
@@ -22,6 +24,8 @@ class SquarePigThread(QtCore.QThread):
 
     def run(self):
         """Run thread."""
+        # XXX: DEBUG output
+        print("run squarepig thread")
         try:
             self.sargasso.copy_to(self.files, self.destination)
         except SquarePig.CopyError as e:
@@ -32,26 +36,34 @@ class ProgressThread(QtCore.QThread):
 
     """Progress update thread."""
 
-    progress = QtCore.pyqtSignal(object)
+    progress = QtCore.pyqtSignal(object, object)
     state = QtCore.pyqtSignal(object)
 
     def __init__(self, sargasso):
         """Initialise thread."""
+        # XXX: DEBUG output
+        print("initialising progress thread...")
         QtCore.QThread.__init__(self)
         self.sargasso = sargasso
 
     def run(self):
         """Run thread."""
+        # XXX: DEBUG output
+        print("run progress thread")
         self.length = -1
         while True:
             state = self.sargasso.get_state()
             self.state.emit(state)
             if state not in ['stopped', 'done']:
                 index, self.length = self.sargasso.get_progress()
-                self.progress.emit(index)
+                failed = self.sargasso.get_failed()
+                self.progress.emit(index, failed)
             else:
                 index, self.length = self.sargasso.get_progress()
-                self.progress.emit(index)
+                failed = self.sargasso.get_failed()
+                # XXX: DEBUG output
+                print("failed: %s" % str(failed))
+                self.progress.emit(index, failed)
                 self.state.emit(state)
                 break
             sleep(0.2)
@@ -62,8 +74,9 @@ class MyMainWindow(QtGui.QMainWindow):
     """Main window."""
 
     def __init__(self, parent=None):
-        """Initialise QT GUI."""
+        """Initialise Qt GUI."""
         super(MyMainWindow, self).__init__(parent)
+        self.setWindowTitle("Squarepig")
         self.form_widget = MainWidget(self)
         self.setCentralWidget(self.form_widget)
         self.statusBar()
@@ -77,20 +90,25 @@ class MyMainWindow(QtGui.QMainWindow):
             if not QtGui.QIcon.hasThemeIcon(icon):
                 QtGui.QIcon.setThemeName('gnome')
 
+        openText = _("&Open")
         openAction = QtGui.QAction(QtGui.QIcon.fromTheme('document-open'),
-                                   '&Open', self)
+                                   openText, self)
         openAction.setShortcut('Ctrl+O')
-        openAction.setStatusTip('Open playlist')
+        openTipText = _("Open playlist")
+        openAction.setStatusTip(openTipText)
         openAction.triggered.connect(self.form_widget._open_playlist)
 
+        exitText = _("&Exit")
         exitAction = QtGui.QAction(QtGui.QIcon.fromTheme('application-exit'),
-                                   '&Exit', self)
+                                   exitText, self)
+        exitTipText = _("Exit applictaion")
         exitAction.setShortcut('Ctrl+Q')
-        exitAction.setStatusTip('Exit application')
+        exitAction.setStatusTip(exitTipText)
         exitAction.triggered.connect(QtGui.qApp.quit)
 
         menubar = self.menuBar()
-        fileMenu = menubar.addMenu('&File')
+        fileText = _("&File")
+        fileMenu = menubar.addMenu(fileText)
         fileMenu.addAction(openAction)
         fileMenu.addAction(exitAction)
 
@@ -107,25 +125,30 @@ class MainWidget(QtGui.QWidget):
 
         self.qlist = QtGui.QListWidget(self)
 
-        self.startButton = QtGui.QPushButton("Start")
+        startButtonText = _("Start")
+        self.startButton = QtGui.QPushButton(startButtonText)
         self.startButton.clicked.connect(self._copy_files)
 
         openButton = QtGui.QPushButton("...")
         openButton.setMaximumWidth(30)
-        openButton.setStatusTip('Open playlist')
+        openButtonText = _("Open playlist:")
+        openButton.setStatusTip(openButtonText)
         openButton.clicked.connect(self._open_playlist)
 
-        openLabel = QtGui.QLabel('Playlist:')
+        openLabelText = _("Playlist:")
+        openLabel = QtGui.QLabel(openLabelText)
         self.openPath = QtGui.QLineEdit()
         self.openPath.editingFinished.connect(lambda: self._load_playlist(
             self.openPath.text()))
 
         saveButton = QtGui.QPushButton("...")
         saveButton.setMaximumWidth(30)
-        saveButton.setStatusTip('Choose destination')
+        saveButtonText = _("Choose destination")
+        saveButton.setStatusTip(saveButtonText)
         saveButton.clicked.connect(self._open_destination)
 
-        saveLabel = QtGui.QLabel("Save to:")
+        saveLabelText = _("Save to:")
+        saveLabel = QtGui.QLabel(saveLabelText)
         self.savePath = QtGui.QLineEdit()
 
         hbox = QtGui.QHBoxLayout()
@@ -138,14 +161,14 @@ class MainWidget(QtGui.QWidget):
         hbox1.addWidget(openButton)
         hbox.addWidget(saveLabel)
         hbox.addWidget(self.savePath)
-        # XXX: Benco suggested moving saveButton into statusBar. Not sure how
+        # NOTE: Benco suggested moving saveButton into statusBar. Not sure how
         # I feel about this though as it seems somewhat messy to put a button
         # into the status area.
         hbox.addWidget(saveButton)
         hbox2.addStretch(1)
 
         vbox = QtGui.QVBoxLayout()
-        # XXX: Benco suggested moving hbox before qlist
+        # NOTE: Benco suggested moving hbox before qlist
         vbox.addLayout(hbox1)
         vbox.addWidget(self.qlist)
         vbox.addLayout(hbox)
@@ -157,16 +180,23 @@ class MainWidget(QtGui.QWidget):
         """Display error message."""
         QtGui.QMessageBox.warning(self, "Warning", str(msg))
 
-    def _on_progress_update(self, data):
+    def _on_progress_update(self, data, failed):
         # FIXME: Right now this doesn't get updated anymore as soon as the
         # thread stops - this results in the progress count actually being
         # behind by one.
+        # XXX: DEBUG output
+        print(data)
         self.main_window.form_widget.qlist.setCurrentRow(data)
         for i in range(0, data):
             self.main_window.form_widget.qlist.item(i).setBackground(
                 QtGui.QColor(198, 233, 175))
+        # paint all failed ones red
+        for j in failed:
+            self.main_window.form_widget.qlist.item(j).setBackground(
+                QtGui.QColor(211, 95, 95))
         if self.sargasso.stop:
-            self.main_window.statusBar().showMessage("Stopping...")
+            msg = _("Stopping...")
+            self.main_window.statusBar().showMessage(msg)
         else:
             self.main_window.statusBar().showMessage(
                 "{index}/{length}".format(
@@ -176,21 +206,26 @@ class MainWidget(QtGui.QWidget):
     def _on_state_update(self, data):
         if data in ['stopped', 'done']:
             self.running = False
-            self.startButton.setText("Start")
+            startButtonText = _("Start")
+            self.startButton.setText(startButtonText)
             if data == 'done':
-                self.main_window.statusBar().showMessage("Done")
+                msg = _("Done")
+                self.main_window.statusBar().showMessage(msg)
             else:
-                self.main_window.statusBar().showMessage("Stopped")
+                msg = _("Stopped")
+                self.main_window.statusBar().showMessage(msg)
         else:
             self.running = True
-            self.startButton.setText("Stop")
+            startButtonText = _("Stop")
+            self.startButton.setText(startButtonText)
 
     def _on_error(self, msg):
         self.show_error(msg)
 
     def _open_playlist(self):
+        fileDialogText = _("Open file")
         fname = QtGui.QFileDialog.getOpenFileName(
-            self, 'Open file', path.expanduser('~'))
+            self, fileDialogText, path.expanduser('~'))
         if fname:
             self.openPath.setText(fname)
             self._load_playlist(fname)
@@ -201,17 +236,23 @@ class MainWidget(QtGui.QWidget):
                 self.qlist.clear()
                 playlist = Playlist(playlist_file)
         except Playlist.UnknownPlaylistFormat:
-            self.show_error("Unknown playlist format")
+            errorText = _("Unknown playlist format")
+            self.show_error(errorText)
         except Playlist.UnsupportedPlaylistFormat as e:
-            self.show_error("Unsupported playlist format: {0}".format(e))
+            errorText = _("Unsupported playlist format: {0}".format(e))
+            self.show_error(errorText)
+        except (FileNotFoundError, UnicodeDecodeError):
+            errorText = _("Unable to read playlist: {0}".format(playlist_file))
+            self.show_error(errorText)
         else:
             files = playlist.get_files()
             for f in files:
                 self.qlist.addItem(f)
 
     def _open_destination(self):
+        fileDialogText = _("Save to")
         dname = QtGui.QFileDialog.getExistingDirectory(
-            self, 'Save to', path.expanduser('~'))
+            self, fileDialogText, path.expanduser('~'))
         if dname:
             self._set_destination(dname)
 
@@ -229,15 +270,19 @@ class MainWidget(QtGui.QWidget):
                 self.main_window.form_widget.qlist.item(index).setBackground(
                     QtGui.QColor('white'))
                 files.append(self.qlist.item(index).text())
+            if len(files) == 0:
+                errorText = _("Please select a playlist first")
+                self.show_error(errorText)
+                return
             destination = self.savePath.text()
 
             self.threads = []
 
-            sargasso = SquarePigThread(files, destination)
+            sargasso = SquarepigThread(files, destination)
             sargasso.error.connect(self._on_error)
 
             self.threads.append(sargasso)
-            sargasso.start()
+            # sargasso.start()
 
             self.sargasso = sargasso.sargasso
 
@@ -246,7 +291,10 @@ class MainWidget(QtGui.QWidget):
             progress.progress.connect(self._on_progress_update)
 
             self.threads.append(progress)
-            progress.start()
+            # progress.start()
+            sleep(0.1)
+            for t in self.threads:
+                t.start()
 
 
 def main():
