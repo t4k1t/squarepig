@@ -1,9 +1,12 @@
 """Qt GUI for Squarepig."""
 
-import sys
-from os import path
+from sys import argv, exit, stderr
+from os import path, mkdir
 from time import sleep
+
+from xdg.BaseDirectory import xdg_cache_home
 from PyQt4 import QtCore, QtGui
+
 from squarepig.backpig import SquarePig, Playlist
 
 
@@ -176,6 +179,13 @@ class MainWidget(QtGui.QWidget):
 
         self.setLayout(vbox)
 
+        self.cachedir = '{0}/squarepig'.format(xdg_cache_home)
+        try:
+            mkdir(self.cachedir, 0o755)
+        except OSError:
+            # cachedir does already exist
+            pass
+
     def show_error(self, msg):
         """Display error message."""
         QtGui.QMessageBox.warning(self, "Warning", str(msg))
@@ -184,6 +194,7 @@ class MainWidget(QtGui.QWidget):
         # FIXME: Right now this doesn't get updated anymore as soon as the
         # thread stops - this results in the progress count actually being
         # behind by one.
+        # #NOTE: Above FIXME might actually be fixed now.
         # XXX: DEBUG output
         print(data)
         self.main_window.form_widget.qlist.setCurrentRow(data)
@@ -223,10 +234,37 @@ class MainWidget(QtGui.QWidget):
         self.show_error(msg)
 
     def _open_playlist(self):
+        pl_path = '~'
+        myfile = None
+        try:
+            myfile = open('{0}/playlist_path'.format(self.cachedir), 'r',
+                          encoding='utf-8')
+        except FileNotFoundError:
+            try:
+                myfile = open('{0}/playlist_path'.format(self.cachedir), 'w',
+                              encoding='utf-8')
+            except OSError as e:
+                msg = _("Unable to write to cache: {0}".format(e))
+                stderr.write('{0}\n'.format(msg))
+            else:
+                myfile.close()
+        else:
+            pl_path = myfile.readline()
+            myfile.close()
+
         fileDialogText = _("Open file")
         fname = QtGui.QFileDialog.getOpenFileName(
-            self, fileDialogText, path.expanduser('~'))
+            self, fileDialogText, path.expanduser(pl_path))
         if fname:
+            try:
+                myfile = open('{0}/playlist_path'.format(self.cachedir), 'w',
+                              encoding='utf-8')
+            except FileNotFoundError:
+                pass
+            else:
+                myfile.write(fname)
+                myfile.close()
+
             self.openPath.setText(fname)
             self._load_playlist(fname)
 
@@ -250,10 +288,37 @@ class MainWidget(QtGui.QWidget):
                 self.qlist.addItem(f)
 
     def _open_destination(self):
+        dst_path = '~'
+        myfile = None
+        try:
+            myfile = open('{0}/dest_path'.format(self.cachedir), 'r',
+                          encoding='utf-8')
+        except FileNotFoundError:
+            try:
+                myfile = open('{0}/dest_path'.format(self.cachedir), 'w',
+                              encoding='utf-8')
+            except OSError as e:
+                msg = _("Unable to write to cache: {0}".format(e))
+                stderr.write('{0}\n'.format(msg))
+            else:
+                myfile.close()
+        else:
+            dst_path = myfile.readline()
+            myfile.close()
+
         fileDialogText = _("Save to")
         dname = QtGui.QFileDialog.getExistingDirectory(
-            self, fileDialogText, path.expanduser('~'))
+            self, fileDialogText, path.expanduser(dst_path))
         if dname:
+            try:
+                myfile = open('{0}/dest_path'.format(self.cachedir), 'w',
+                              encoding='utf-8')
+            except FileNotFoundError:
+                pass
+            else:
+                myfile.write(dname)
+                myfile.close()
+
             self._set_destination(dname)
 
     def _set_destination(self, path):
@@ -292,18 +357,24 @@ class MainWidget(QtGui.QWidget):
 
             self.threads.append(progress)
             # progress.start()
+            # sleep(0.1)
+            # for t in self.threads:
+            #     t.start()
+
+            # NOTE: Make sure sargasso thread is started before progress
+            # thread, so progress thread has something to report.
+            sargasso.start()
             sleep(0.1)
-            for t in self.threads:
-                t.start()
+            progress.start()
 
 
 def main():
     """Main function."""
-    app = QtGui.QApplication(sys.argv)
+    app = QtGui.QApplication(argv)
     window = MyMainWindow()
     window.resize(640, 480)
     window.show()
-    sys.exit(app.exec_())
+    exit(app.exec_())
 
 
 if __name__ == "__main__":
