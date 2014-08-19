@@ -1,3 +1,15 @@
+squarepig (0.3.0ubuntu2) trusty; urgency=medium
+
+  * Add man missing man page archive
+
+ -- Tablet Mode <tablet-mode@monochromatic.cc>  Tue, 19 Aug 2014 20:37:52 +0200
+
+squarepig (0.3.0ubuntu1) trusty; urgency=medium
+
+  * Fix building of locales
+
+ -- Tablet Mode <tablet-mode@monochromatic.cc>  Tue, 19 Aug 2014 20:22:42 +0200
+
 squarepig (0.3.0) trusty; urgency=medium
 
   * Cache playlist and destination directories

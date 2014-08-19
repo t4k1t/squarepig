@@ -1,2 +1,3 @@
 include squarepig/*
+include man/squarepig.1.bz2
 include README.rst
