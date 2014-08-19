@@ -3,7 +3,7 @@
 from os import path, makedirs
 from re import match, sub
 from shutil import copy
-from sys import stderr, stdout
+from sys import stderr
 
 
 class Playlist:
@@ -89,6 +89,7 @@ class SquarePig:
         self.progress = (0, 0)
         self.error = None
         self.stop = False
+        self.failed = []
 
     class CopyError(Exception):
         def __init__(self, value):
@@ -157,8 +158,9 @@ class SquarePig:
 
         self.progress = (file_count, file_count)
         self.state = 'done'
-        stderr.write('failed to copy {0} files\n'.format(
-            len(self.failed)))
+        if len(self.failed) > 0:
+            stderr.write('failed to copy {0} files\n'.format(
+                len(self.failed)))
 
     def get_failed(self):
         """Get failed files."""

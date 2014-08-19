@@ -1,1 +1,2 @@
 include squarepig/*
+include README.rst
