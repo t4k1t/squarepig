@@ -1,3 +1,10 @@
+squarepig (0.3.0) trusty; urgency=medium
+
+  * Cache playlist and destination directories
+  * Fix some bugs
+
+ -- Tablet Mode <tablet-mode@monochromatic.cc>  Tue, 19 Aug 2014 20:03:08 +0200
+
 squarepig (0.2.0ubuntu3) trusty; urgency=high
 
   * Changed install path to /usr/bin.
